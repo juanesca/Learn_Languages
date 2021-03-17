@@ -13,6 +13,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.use('/user',user);
+app.use('/foros',require('./routes/foros'));
+app.use('/cal',require('./routes/calificaciones'));
+app.use('/content',require('./routes/content'));
 
 
 
