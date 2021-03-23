@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const authorize = require("./../controllers/authorize");
+const subir = require('./../controllers/subir')
+const multer= require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 const db = require("./../db/db");
 
@@ -59,15 +62,14 @@ router.get("/peliculas", authorize, async (req, res) => {
   }
 });
 
-
-router.post("/add",authorize,async(req,res)=>{
+router.post("/add",authorize,upload.single('img'),subir,async(req,res)=>{
     try {
-        const {tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar} = req.body;
+        const {tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar, URL} = req.body;
         let connection = await db.connect();
         if (tipo_cont == 1) {
-            await connection.query("INSERT INTO contenidos (tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar) VALUES ($1,$2,$3,$4,$5,$6,$7)",[tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar]);
+            await connection.query("INSERT INTO contenidos (tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar,img) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",[tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar,URL]);
         } else {
-            await connection.query("INSERT INTO contenidos (tipocontenido,titulo,reseña,contenido,posteador,idioma) VALUES ($1,$2,$3,$4,$5,$6)",[tipocontenido,titulo,reseña,contenido,posteador,idioma]);
+            await connection.query("INSERT INTO contenidos (tipocontenido,titulo,reseña,contenido,posteador,idioma,img) VALUES ($1,$2,$3,$4,$5,$6,$7)",[tipocontenido,titulo,reseña,contenido,posteador,idioma,URL]);
         };
         connection.release();
         res.status(200)
@@ -76,16 +78,32 @@ router.post("/add",authorize,async(req,res)=>{
         res.status(500).json("Serever error");
     }
 });
+router.post("/addGames",authorize,upload.array('img',2),subir,async(req,res)=>{
+  try {
+      const {tipocontenido,titulo,reseña,posteador,idioma,idiomaenseñar,URL} = req.body;
+      let connection = await db.connect();
+      if (tipo_cont == 1) {
+          await connection.query("INSERT INTO contenidos (tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar,img) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",[tipocontenido,titulo,reseña,URL[0],posteador,idioma,idiomaenseñar,URL[1]]);
+      } else {
+          await connection.query("INSERT INTO contenidos (tipocontenido,titulo,reseña,contenido,posteador,idioma,img) VALUES ($1,$2,$3,$4,$5,$6,$7)",[tipocontenido,titulo,reseña,URL[0],posteador,idioma,URL[1]]);
+      };
+      connection.release();
+      res.status(200)
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).json("Serever error");
+  }
+});
 
-router.put("/edit/:id",authorize,async(req,res)=>{
+router.put("/edit/:id",authorize,upload.single('img'),subir,async(req,res)=>{
     try {
         const {id} = req.params;
-        const {tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar} = req.body;
+        const {tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar,URL} = req.body;
         let connection = await db.connect();
         if (tipo_cont == 1) {
-            await connection.query("UPDATE contenidos SET (tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar) = ($1,$2,$3,$4,$5,$6,$7) WHERE id = $8",[tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar,id]);
+            await connection.query("UPDATE contenidos SET (tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar,img) = ($1,$2,$3,$4,$5,$6,$7,$9) WHERE id = $8",[tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar,id,URL]);
         } else {
-            await connection.query("UPDATE contenidos SET (tipocontenido,titulo,reseña,contenido,posteador,idioma) = ($1,$2,$3,$4,$5,$6) WHERE id = $7",[tipocontenido,titulo,reseña,contenido,posteador,idioma,id]);
+            await connection.query("UPDATE contenidos SET (tipocontenido,titulo,reseña,contenido,posteador,idioma,img) = ($1,$2,$3,$4,$5,$6,$8) WHERE id = $7",[tipocontenido,titulo,reseña,contenido,posteador,idioma,id,URL]);
         };
         connection.release();
         res.status(200)
@@ -94,7 +112,23 @@ router.put("/edit/:id",authorize,async(req,res)=>{
         res.status(500).json("Server error")
     }
 });
-
+router.put("/editgames/:id",authorize,upload.array('img',2),subir,async(req,res)=>{
+  try {
+      const {id} = req.params;
+      const {tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar,URL} = req.body;
+      let connection = await db.connect();
+      if (tipo_cont == 1) {
+          await connection.query("UPDATE contenidos SET (tipocontenido,titulo,reseña,contenido,posteador,idioma,idiomaenseñar,img) = ($1,$2,$3,$4,$5,$6,$7,$9) WHERE id = $8",[tipocontenido,titulo,reseña,URL[0],posteador,idioma,idiomaenseñar,id,URL[1]]);
+      } else {
+          await connection.query("UPDATE contenidos SET (tipocontenido,titulo,reseña,contenido,posteador,idioma,img) = ($1,$2,$3,$4,$5,$6,$8) WHERE id = $7",[tipocontenido,titulo,reseña,URL[0],posteador,idioma,id,URL[1]]);
+      };
+      connection.release();
+      res.status(200)
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).json("Server error")
+  }
+});
 router.delete("delete/:id",authorize,async(req,res)=>{
     try {
         const {id} = req.params;

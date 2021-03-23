@@ -1,8 +1,8 @@
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-
-const user= require("./routes/user")
+const Socket = require("socket.io");
+const user= require("./routes/user");
 
 const app = express();
 
@@ -18,8 +18,11 @@ app.use('/cal',require('./routes/calificaciones'));
 app.use('/content',require('./routes/content'));
 
 
-
-
-app.listen(app.get("port"), () => {
+const server = app.listen(app.get("port"), () => {
     console.log(`Server running on port ${app.get("port")}`);
+})
+
+const io=Socket(server);
+io.on('connection',(socket)=>{
+    console.log(socket.id);
 })
