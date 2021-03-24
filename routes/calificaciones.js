@@ -104,7 +104,7 @@ router.put('/ucf/edit/:id_u&id_c', authorize, async (req, res) => {
   }
 });
 
-router.get('/ucc/:id_u&id_c', authorize, async (req, res) => {
+router.get('/ucf/:id_u&id_c', authorize, async (req, res) => {
   try {
     const { id_u, id_c } = req.params;
     let connection = await db.connect();
