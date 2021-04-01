@@ -5,7 +5,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader }  from 'reactstrap'
 
 import { Link } from 'react-router-dom';
 
-import { localGet, localRemove } from "../functions/localStorage";
+import {localRemove,localGet} from "../Functions/localStorage";
 
 import { toast } from 'react-toastify';
 

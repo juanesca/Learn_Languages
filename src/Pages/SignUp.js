@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {axios} from './../Functions/AxiosPath';
 import { toast } from 'react-toastify';
-import { localSave } from '../functions/localStorage';
+import {localSave} from './../Functions/localStorage';
 
 const Signup = ({ setAuth }) => {
   const [inputs, setInputs] = useState({

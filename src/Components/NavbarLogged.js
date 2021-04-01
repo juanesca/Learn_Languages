@@ -1,7 +1,7 @@
 import React from "react";
-
+import { toast } from 'react-toastify';
 import { Link } from "react-router-dom";
-
+import {localRemove} from './../Functions/localStorage';
 const Navbar = ({ setAuth }) => {
     const logout = async (e) => {
         e.preventDefault();

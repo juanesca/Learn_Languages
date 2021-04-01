@@ -6,13 +6,13 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 
 import { toast } from 'react-toastify';
 
-import { axios } from '././Functions/AxiosPath'
+import { axios } from './Functions/AxiosPath'
 
 import Login from './Pages/Login';
 import Dashboard from './Pages/Dashboard';
-import Signup from '././Pages/SignUp'
+import Signup from './Pages/SignUp'
 
-import { localGet } from './functions/localStorage';
+import obj from './Functions/localStorage';
 
 toast.configure();
 

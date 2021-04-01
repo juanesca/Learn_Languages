@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {axios} from "./../Functions/AxiosPath";
 
 import { toast } from "react-toastify";
-import { localSave } from "../functions/localStorage";
+import {localSave} from "./../Functions/localStorage";
 
 const Login = ({ setAuth }) => {
   const [inputs, setInputs] = useState({
