@@ -6,6 +6,21 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 const db = require("./../db/db");
 
+router.get("/:id", authorize, async (req, res) => {
+  try {
+    const {id} = req.params;
+    let connection = await db.connect();
+    const content = await connection.query(
+      "SELECT contenidos.*, CONCAT(usuarios.nombres,' ',usuarios.apellidos) AS nombre FROM contenidos JOIN usuarios ON usuarios.id = contenidos.posteador WHERE contenidos.id = $1 ",[id]
+    );
+    connection.release();
+    res.json(content.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json("Server error");
+  }
+});
+
 router.get("/teoria", authorize, async (req, res) => {
   try {
     let connection = await db.connect();
