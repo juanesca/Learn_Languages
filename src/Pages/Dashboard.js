@@ -13,11 +13,9 @@ import { toast } from "react-toastify";
 const Dashboard = ({ setAuth }) => {
   const [content, setContent] = useState([]);
   const [modalInsertar, setModalInsertar] = useState(false);
-  const [modalEliminar, setModalEliminar] = useState(false);
   const [tipoModal, setTipoModal] = useState("");
   const [newContent, setNewContent] = useState({});
-  const [deleteContentID, setDeleteContentID] = useState("");
-  const [editContentID, setEditContentID] = useState("");
+
 
   useEffect(async () => {
     getContenido();
@@ -39,11 +37,11 @@ const Dashboard = ({ setAuth }) => {
     try {
       let tipoc = localGet("intencion");
       let tc = "";
-      if (tipoc == 1) {
+      if (tipoc === 1) {
         tc = "teorias";
-      } else if (tipoc == 2) {
+      } else if (tipoc === 2) {
         tc = "libros";
-      } else if (tipoc == 3) {
+      } else if (tipoc === 3) {
         tc = "juegos";
       } else {
         tc = "peliculas";
@@ -56,18 +54,13 @@ const Dashboard = ({ setAuth }) => {
     }
   };
 
-  const deleteContenido = async (taskID) => {
-    await axios.delete(`/content/delete/${taskID}`);
-    getContenido();
-  };
-
   const handleChange = async (e) => {
     await setNewContent({ ...newContent, [e.target.name]: e.target.value });
-    console.log({ newTask });
+    console.log({ newContent });
   };
 
   const handlePhoto = async (e) => {
-    await setNewContent({ ...newTask, img: e.target.files[0] });
+    await setNewContent({ ...newContent, img: e.target.files[0] });
   };
 
   const postContenido = async (e) => {
@@ -143,7 +136,7 @@ const Dashboard = ({ setAuth }) => {
                   </div>
                 </div>
                 <div className="card-body">
-                  <Link className="btn btn-success" to={`/content/${bk.id}`}>
+                  <Link className="btn btn-success stretched-link" to={`/content/${bk.id}`}>
                     Ver
                   </Link>
                 </div>
@@ -266,48 +259,19 @@ const Dashboard = ({ setAuth }) => {
             </div>
           </ModalBody>
           <ModalFooter>
-            {tipoModal === "insertar" ? (
               <button
                 className="btn btn-success"
                 onClick={(e) => postContenido(e)}
               >
                 OK
               </button>
-            ) : (
-              <button
-                className="btn btn-success"
-                onClick={() => putContenido(editTaskID)}
-              >
-                OK
-              </button>
-            )}
 
             <button className="btn btn-danger" onClick={() => modalIns()}>
               Cancel
             </button>
           </ModalFooter>
         </Modal>
-        <Modal isOpen={modalEliminar}>
-          <ModalBody>Estás seguro que deseas eliminar esta tarea ?</ModalBody>
-          <ModalFooter>
-            <button
-              className="btn btn-danger"
-              onClick={() => {
-                deleteContenido(deleteTaskID);
-                setDeleteContentID(null);
-                setModalEliminar(false);
-              }}
-            >
-              Sí
-            </button>
-            <button
-              className="btn btn-secundary"
-              onClick={() => setModalEliminar(false)}
-            >
-              No
-            </button>
-          </ModalFooter>
-        </Modal>
+        
       </div>
     </div>
   );

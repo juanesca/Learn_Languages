@@ -13,7 +13,8 @@ import Dashboard from './Pages/Dashboard';
 import Signup from './Pages/SignUp';
 import ContentID from "./Pages/Content";
 
-import Navb from "./Components/NavbarLogged";
+import Navb from "./Components/NavbarLogged.jsx";
+import Navi from "./Components/Navbar";
 
 toast.configure();
 
@@ -46,8 +47,10 @@ function App() {
     <Fragment>
             <Router>
                 <Switch>
+                    <Navi>
                       <Route exact path="/login" render={props => !isAuthenticated ? (<Login {...props} setAuth={setAuth} />) : (<Redirect to="/dashboard" />)} />
                       <Route exact path="/" render={props => !isAuthenticated ? (<Signup {...props} setAuth={setAuth} />) : (<Redirect to="/dashboard" />)} />
+                    </Navi>
                     <Navb setAuth={setAuth}  >
                       <Route exact path="/dashboard" render={props => isAuthenticated ? (<Dashboard {...props} setAuth={setAuth} />) : (<Redirect to="/login" />)} />
                       <Route  exact path="/content/:id" component={ContentID} />

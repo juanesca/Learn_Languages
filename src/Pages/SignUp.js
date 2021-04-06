@@ -49,7 +49,7 @@ const Signup = ({ setAuth }) => {
       <div className="container-fluid d-flex justify-content-center" style={{paddingTop: '10vh'}}>
 
 
-      <div className="card" style={{ width: "35rem", height: "30rem" }}>
+      <div className="card container-fluid" style={{ width: "70%",height: "70%"  }}>
           <div className="card-header" style={{textAlign: 'center'}}>Sign Up</div>
           <form onSubmit={onSubmitForm} className="h-100" style={{paddingBottom: '0px'}}>
             <div className="card-body" style={{height: '80%'}}>
@@ -77,8 +77,8 @@ const Signup = ({ setAuth }) => {
             />
           </div>
         </div>
-        <div className="row">
-        <div className="form-group col-sm-6 row">
+      
+        <div className="form-group row">
           <label htmlFor="idi_o" className="col-sm-3 col-form-label">Idioma Objetivo</label>
           <select
             className="custom-select col-sm-9"
@@ -91,7 +91,7 @@ const Signup = ({ setAuth }) => {
                     <option value="2">Spanish</option>
             </select>
          </div>
-        <div className="form-group col-sm-6 row">
+        <div className="form-group row">
                   <label htmlFor="idi_n" className="col-sm-3 col-form-label">Idioma Nativo</label>
                   <select
                     className="custom-select col-sm-9"
@@ -104,9 +104,9 @@ const Signup = ({ setAuth }) => {
                     <option value="2">Spanish</option>
                   </select>
                 </div>
-              </div>
-        <div className="row">
-        <div className="form-group col-sm-6 row">
+           
+
+        <div className="form-group row">
           <label htmlFor="name" className="col-sm-3 col-form-label">Nombre</label>
           <div className="col-sm-9">
             <input 
@@ -118,7 +118,7 @@ const Signup = ({ setAuth }) => {
             />
           </div>
         </div>
-        <div className="form-group col-sm-6 row">
+        <div className="form-group row">
           <label htmlFor="apll" className="col-sm-3 col-form-label">Apellido</label>
           <div className="col-sm-9">
             <input 
@@ -130,7 +130,6 @@ const Signup = ({ setAuth }) => {
               />
           </div>
         </div>
-      </div>
       <div className="form-group row">
         <label className="col-sm-3 col-form-label" htmlFor="inten">Intencion</label>
         <select
