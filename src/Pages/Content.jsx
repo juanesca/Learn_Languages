@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { axios } from "./../Functions/AxiosPath";
+import { axios } from "../Functions/AxiosPath";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
