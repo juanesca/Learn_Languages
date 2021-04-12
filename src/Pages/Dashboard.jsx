@@ -21,7 +21,20 @@ const Dashboard = ({ setAuth }) => {
     idioma: 0,
     idiomaenseñar: 0,
     count: 0,
-    ubicacion:'Content',
+    ubicacion: 'Content',
+    img: [{}, {}]
+  });
+  const [modalU, setModalU] = useState(false);
+  const [upContent, setupContent] = useState({
+    id: 0,
+    tipocontenido: 0,
+    titulo: "",
+    reseña: "",
+    posteador: localGet('user_id'),
+    idioma: 0,
+    idiomaenseñar: 0,
+    count: 0,
+    ubicacion: 'Content',
     img: [{}, {}]
   });
   const [tc, settc] = useState(localGet("intencion"))
@@ -77,6 +90,7 @@ const Dashboard = ({ setAuth }) => {
         if (tc == 1 || tc == 2) {
           await axios.get(`/content/get/1&${localGet('user_id')}`).then((res) => {
             setNewContent({ ...newContent, tipocontenido: 1 });
+            setupContent({ ...upContent, tipocontenido: 1 });
             setContent(res.data.sort((a, b) => {
               if (a.orden > b.orden) {
                 return 1;
@@ -90,6 +104,7 @@ const Dashboard = ({ setAuth }) => {
         } else if (tc == 4) {
           await axios.get(`/content/get/2&${localGet('user_id')}`).then((res) => {
             setNewContent({ ...newContent, tipocontenido: 2 });
+            setupContent({ ...upContent, tipocontenido: 2 });
             setContent(res.data.sort((a, b) => {
               if (a.orden > b.orden) {
                 return 1;
@@ -101,6 +116,7 @@ const Dashboard = ({ setAuth }) => {
         } else if (tc == 5) {
           await axios.get(`/content/get/4&${localGet('user_id')}`).then((res) => {
             setNewContent({ ...newContent, tipocontenido: 4 });
+            setupContent({ ...upContent, tipocontenido: 4 });
             setContent(res.data.sort((a, b) => {
               if (a.orden > b.orden) {
                 return 1;
@@ -112,6 +128,7 @@ const Dashboard = ({ setAuth }) => {
         } else if (tc == 6) {
           await axios.get(`/content/get/3&${localGet('user_id')}`).then((res) => {
             setNewContent({ ...newContent, tipocontenido: 3 });
+            setupContent({ ...upContent, tipocontenido: 3 });
             setContent(res.data.sort((a, b) => {
               if (a.orden > b.orden) {
                 return 1;
@@ -149,25 +166,36 @@ const Dashboard = ({ setAuth }) => {
         document.getElementById(i).style.border = "1px solid red";
         valid = false;
       } else {
-        if (i!="img") {
+        if (i != "img") {
           x.append(i, newContent[i]);
         }
       }
     }
-    x.append("img",newContent.img[0]);
-    x.append("img",newContent.img[1]);
+    x.append("img", newContent.img[0]);
+    x.append("img", newContent.img[1]);
     if (valid) {
       await axios
         .post("/content/add", x)
         .then((res) => {
-          console.log(res);
           modalIns();
           getContenido();
+          toast.success('Se registro su contenido');
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          toast.error('Ocurrio un error durante el registro');
+          console.log(err)
+        });
     }
   };
+  const handleChangeU = async (e) => {
+    await setupContent({ ...upContent, [e.target.name]: e.target.value });
+  };
 
+  const handlePhotoU = async (e, i) => {
+    let aux = [...upContent.img];
+    aux[i] = await e.target.files[0];
+    await setupContent({ ...upContent, img: aux });
+  };
   const putContenido = async (taskID) => {
     await axios
       .post(`/content/edit/${taskID}`, newContent)
@@ -289,7 +317,16 @@ const Dashboard = ({ setAuth }) => {
                           Ver
                         </Link>);
                     } else {
-                      return (<><Button color="success">Editar</Button>{" "}<Button color="warning" className="btn btn-success">Eliminar</Button></>);
+                      return (<><Button color="success" onClick={() => {
+                        setupContent({
+                          ...upContent,
+                          id: bk.id,
+                          titulo: bk.titulo,
+                          reseña: bk.reseña,
+                          idioma: bk.idioma,
+                          idiomaenseñar: bk.idiomaenseñar
+                        }); setModalU();
+                      }}>Editar</Button>{" "}<Button color="warning" className="btn btn-success">Eliminar</Button></>);
                     }
                   })()}
                 </div>
@@ -301,7 +338,7 @@ const Dashboard = ({ setAuth }) => {
         <Modal isOpen={modalInsertar}>
           <ModalHeader style={{ display: "block" }}>
             <span
-              style={{ float: "right" }}
+              style={{ float: "right", cursor: "pointer" }}
               onClick={() => modalIns()}
             >
               x
@@ -432,6 +469,141 @@ const Dashboard = ({ setAuth }) => {
             </button>
           </ModalFooter>
         </Modal>
+        <Modal isOpen={modalInsertar}>
+          <ModalHeader style={{ display: "block" }}>
+            <span
+              style={{ float: "right", cursor: "pointer" }}
+              onClick={() => modalIns()}
+            >
+              x
+            </span>
+          </ModalHeader>
+          <ModalBody>
+            <div className="form-group row">
+              <label htmlFor="img" className="col-sm-2 col-form-label">
+                Imagen
+              </label>
+              <div className="col-sm-10">
+                <form enctype="multipart/form-data">
+                  <input
+                    type="file"
+                    className="form-control"
+                    id="img"
+                    enctype="multipart/form-data"
+                    accept="image/*"
+                    onChange={(e) => handlePhoto(e, 0)}
+                    name="img"
+                  /></form>
+              </div>
+            </div>
+            <div className="form-group row">
+              <label htmlFor="titulo" className="col-sm-2 col-form-label">
+                Titulo
+              </label>
+              <div className="col-sm-10">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="titulo"
+                  onChange={(e) => handleChange(e)}
+                  name="titulo"
+                  value={newContent ? newContent.titulo : ""}
+                />
+              </div>
+            </div>
+            <div className="form-group row">
+              <label htmlFor="reseña" className="col-sm-2 col-form-label">
+                Reseña
+              </label>
+              <div className="col-sm-10">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="reseña"
+                  onChange={(e) => handleChange(e)}
+                  name="reseña"
+                  value={newContent ? newContent.reseña : ""}
+                />
+              </div>
+            </div><div className="form-group row">
+
+              <label htmlFor="img" className="col-sm-2 col-form-label">
+                Contenido
+              </label>
+              <div className="col-sm-10">
+                <form enctype="multipart/form-data">
+                  <input
+                    type="file"
+                    className="form-control"
+                    id="contenido"
+                    enctype="multipart/form-data"
+                    onChange={(e) => handlePhoto(e, 1)}
+                    name="img"
+                  /></form>
+
+              </div>
+            </div>
+
+            <div className="form-group row">
+              <label htmlFor="idioma" className="col-sm-2 col-form-label">
+                Idioma
+              </label>
+              <div className="col-sm-10">
+                <select
+                  className="form-control"
+                  id="idioma"
+                  onChange={(e) => handleChange(e)}
+                  name="idioma"
+                  value={newContent ? newContent.idioma : ""}
+                >
+                  <option style={{ display: "none" }}>Choose...</option>
+                  {idiomas.map((elem) => {
+                    console.log(elem);
+                    return (
+                      <option value={elem.id}>{elem.stridioma}</option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
+
+            <div className="form-group row">
+              <label htmlFor="idiomaenseñar" className="col-sm-2 col-form-label">
+                Idioma a enseñar
+              </label>
+              <div className="col-sm-10">
+                <select
+                  className="form-control"
+                  id="idiomaenseñar"
+                  onChange={(e) => handleChange(e)}
+                  name="idiomaenseñar"
+                  value={newContent ? newContent.idiomaenseñar : ""}
+                >
+                  <option style={{ display: "none" }}>Choose...</option>
+                  {idiomas.map((elem) => {
+                    console.log(elem);
+                    return (
+                      <option value={elem.id}>{elem.stridioma}</option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <button
+              className="btn btn-success"
+              onClick={(e) => putContenido(e)}
+            >
+              OK
+              </button>
+
+            <button className="btn btn-danger" onClick={() => modalIns()}>
+              Cancel
+            </button>
+          </ModalFooter>
+        </Modal>
+
       </div>
     </div>
   );

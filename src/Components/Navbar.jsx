@@ -8,7 +8,7 @@ export default class Navigation extends Component {
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-3">
                 <div className="container">
                     <Link className="navbar-brand" to="/dashboard">
-                        TasksApp
+                        D_Learn
                     </Link>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
