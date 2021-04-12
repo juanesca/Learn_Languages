@@ -21,6 +21,7 @@ const Dashboard = ({ setAuth }) => {
     idioma: 0,
     idiomaenseñar: 0,
     count: 0,
+    ubicacion:'Content',
     img: [{}, {}]
   });
   const [tc, settc] = useState(localGet("intencion"))
@@ -135,26 +136,29 @@ const Dashboard = ({ setAuth }) => {
 
   const handlePhoto = async (e, i) => {
     let aux = [...newContent.img];
-    aux[i] = e.target.files[0];
+    aux[i] = await e.target.files[0];
     await setNewContent({ ...newContent, img: aux });
   };
 
   const postContenido = async (e) => {
-    let valid = true;    
-    let x = new FormData();
-    x.append('img',newContent.img)
+    let valid = true;
+    const x = new FormData();
     for (let i in newContent) {
       if (!newContent[i] && i != "count") {
         console.log(i);
         document.getElementById(i).style.border = "1px solid red";
         valid = false;
-      } 
+      } else {
+        if (i!="img") {
+          x.append(i, newContent[i]);
+        }
+      }
     }
-    console.log(x);
-    let y ={...newContent, img:x}
+    x.append("img",newContent.img[0]);
+    x.append("img",newContent.img[1]);
     if (valid) {
       await axios
-        .post("/content/add", y)
+        .post("/content/add", x)
         .then((res) => {
           console.log(res);
           modalIns();
@@ -314,7 +318,8 @@ const Dashboard = ({ setAuth }) => {
                     type="file"
                     className="form-control"
                     id="img"
-                    accept=".png, .jpg, .jpeg"
+                    enctype="multipart/form-data"
+                    accept="image/*"
                     onChange={(e) => handlePhoto(e, 0)}
                     name="img"
                   /></form>
@@ -360,6 +365,7 @@ const Dashboard = ({ setAuth }) => {
                     type="file"
                     className="form-control"
                     id="contenido"
+                    enctype="multipart/form-data"
                     onChange={(e) => handlePhoto(e, 1)}
                     name="img"
                   /></form>
