@@ -9,14 +9,15 @@ const path = require('path');
 });
 const bucket = storage.bucket(process.env.GCLOUD_BUCKET);*/
 require("dotenv").config();
-const subir = async (req, res, next) => {
+const subir = (req, res, next) => {
     let ubicacion = req.body.ubicacion;
     if (ubicacion == "Users") {
         req.body.URL = `Users&${req.file.filename}`;
     } else if (ubicacion == "Content") {
         req.body.URL = [];
-        req.body.URL.push(`Content&${req.file[0].filename}`);
-        req.body.URL.push(`Contentarch&${req.file[1].filename}`);
+        console.log(req.file);
+        req.body.URL.push(`Content&${req.files[0].filename}`);
+        req.body.URL.push(`Contentarch&${req.files[1].filename}`);
     }
     next();
     /*

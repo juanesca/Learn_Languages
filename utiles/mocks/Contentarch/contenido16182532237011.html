@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>caos</title>
+</head>
+
+<body>
+    <input type="number" min="0" max="1" id="x" onchange="cambiar('x')" oninput="cambiar('x')" placeholder="x">
+    <input type="number" onchange="cambiar('u')" oninput="cambiar('u')" id="u" min="0" max="4" placeholder="u">
+    <input type="number" onchange="cambiar('n')" oninput="cambiar('n')" id="n" min="0" placeholder="n">
+    <input type="button" onclick="calcular()" value="Calcular">
+    <br>
+    <div id="elem">
+
+    </div>
+    <script>
+        cambiar = (n) => {
+            let elem = document.getElementById(n);
+            if (elem.min) {
+                if (parseInt(elem.min) > parseInt(elem.value)) {
+                    elem.value=elem.min;
+                }
+            }
+            if (elem.max) {
+                if (parseInt(elem.max) < parseInt(elem.value)) {
+                    elem.value=elem.max;
+                }
+            }
+        }
+        calcular = () => {
+            let x = document.getElementById("x").value ? document.getElementById("x").value : 0;
+            let u = document.getElementById("u").value ? document.getElementById("u").value : 0;
+            let n = document.getElementById("n").value ? document.getElementById("n").value : 0;
+            let tabla = `<table width="100%" style="border-collapse: collapse;" border="1px black solid">
+            <tr>
+                <th>x</th>
+                <th>n</th>
+            </tr>`;
+            for (let i = 0; i <= n; i++) {
+                tabla = tabla + `<tr>
+                <td> <center>${x}</center></td>
+                <td> <center>${i}</center></td>
+            </tr>`;
+
+                x = u * x * (1 - x);
+            }
+            tabla = tabla + `</table>`;
+            document.getElementById('elem').innerHTML = tabla;
+        }
+    </script>
+</body>
+
+</html>

@@ -14,7 +14,7 @@ let storage = multer.diskStorage({
     }
   },
   filename: async (req, file, cb) => {
-    cb(null, "contenido" + req.body.id + "" + path.extname(file.originalname));
+    cb(null, "contenido" + (new Date()).getTime() + req.body.posteador + "" + path.extname(file.originalname));
   }
 })
 const upload = multer({ storage: storage });
@@ -80,20 +80,21 @@ router.get("/get/:tipo&:id", authorize, async (req, res) => {
 });
 
 router.post("/add", authorize, upload.array('img', 2), subir, async (req, res) => {
-  try {
-    const { tipocontenido, titulo, reseña, posteador, idioma, idiomaenseñar, URL } = req.body;
 
-    console.log(req.body);
+  const { tipocontenido, titulo, reseña, posteador, idioma, idiomaenseñar, URL } = req.body;
+  try {
     let connection = await db.connect();
     await connection.query(`INSERT INTO public.contenidos
-      (tipocontenido, titulo, reseña, contenido, posteador, idioma, idiomaenseñar, calificacion, img)
-    VALUES($1, $2, $3, $4, $5, $6, $7, $8);`, [tipocontenido, titulo, reseña, posteador, URL[1], idioma, idiomaenseñar, URL[0]]).then(data => {
-      connection.release();
-      res.status(200)
-    }).catch(err => {
-      connection.release();
-      console.log(err);
-    });
+      (tipocontenido, titulo, reseña, contenido, posteador, idioma, idiomaenseñar, img)
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8);`, [tipocontenido, titulo, reseña,URL[1], posteador, idioma, idiomaenseñar, URL[0]])
+      .then(data => {
+        connection.release();
+        console.log("exito");
+        res.status(200);
+      }).catch(err => {
+        connection.release();
+        console.log(err);
+      });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Serever error");
