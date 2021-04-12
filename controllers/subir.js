@@ -1,16 +1,25 @@
 const { Storage } = require('@google-cloud/storage');
 const path = require('path');
-const storage = new Storage({
+/*const storage = new Storage({
     projectid: process.env.GCLOUD_PROJECT,
     credentials: {
         client_email: process.env.GCLOUD_CLIENT_EMAIL,
         private_key: process.env.GCLOUD_PRIVATE_KEY
     }
 });
-const bucket = storage.bucket(process.env.GCLOUD_BUCKET);
+const bucket = storage.bucket(process.env.GCLOUD_BUCKET);*/
 require("dotenv").config();
 const subir = async (req, res, next) => {
-    let ubicuacion = req.body.ubicacion;
+    let ubicacion = req.body.ubicacion;
+    if (ubicacion == "Users") {
+        req.body.URL = `Users&${req.file.filename}`;
+    } else if (ubicacion == "Content") {
+        req.body.URL = [];
+        req.body.URL.push(`Content&${req.file[0].filename}`);
+        req.body.URL.push(`Contentarch&${req.file[1].filename}`);
+    }
+    next();
+    /*
     if (ubicacion == "juegos") {
         const { titulo, id } = req.body;
         newFileName = [];
@@ -40,7 +49,7 @@ const subir = async (req, res, next) => {
     } else {
         if (ubicuacion == "usuarios") {
             const { correo, id } = req.body;
-            newFileName = "usuarios/" + id + "-" + correo + path.extname(req.file.originalname);
+            newFileName = "usuarios/" usuario+ id + "-" + correo + path.extname(req.file.originalname);
         } else if (ubicuacion == "mensajes") {
             const { emisor, id, } = req.body;
             newFileName = "mensajes/" + id + "-" + emisor + 'mensaje' + path.extname(req.file.originalname);
@@ -62,7 +71,8 @@ const subir = async (req, res, next) => {
                 next();
             });
         fileStream.end(req.file.buffer);
-    }
+    }*/
+
 };
 
 module.exports = subir;
